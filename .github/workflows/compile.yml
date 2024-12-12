@@ -30,10 +30,7 @@ jobs:
           choco install visualstudio2022-workload-manageddesktop -y || exit 1
           choco install visualstudio2022-workload-nativedesktop -y || exit 1
           choco install visualstudio2022-workload-vctools -y || exit 1
-          choco install windows-sdk -y || exit 1
-          choco install windows-driver-kit -y || exit 1
-      
-          
+          choco install windowsdriverkit11 -y || exit 1
 
       - name: Build the IDDCX driver
         run: |
