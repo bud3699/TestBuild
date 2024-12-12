@@ -26,10 +26,10 @@ jobs:
 
     - name: Build IDDCX Driver
       run: |
-        msbuild "Virtual Display Driver (HDR)\MttVDD\MttVDD.vcxproj" /p:Configuration=Release /p:Platform=x64
+        msbuild \"Virtual Display Driver (HDR)\\MttVDD\\MttVDD.vcxproj\" /p:Configuration=Release /p:Platform=x64
 
     - name: Archive Build Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: IDDCX-Driver
-        path: Virtual Display Driver (HDR)\x64\
+        path: \"Virtual Display Driver (HDR)\\x64\\\"
