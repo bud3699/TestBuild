@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Debug, Release]
-        platform: [Win32, x64, ARM, ARM64]
+        platform: [ x64, ARM64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,7 +23,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1
 
       - name: Install Visual Studio dependencies
-        uses: microsoft/setup-visual-studio@v1
+        uses: microsoft/setup-visualstudio@v2
         with:
           version: "latest"
           components: |
