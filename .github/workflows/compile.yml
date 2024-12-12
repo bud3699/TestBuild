@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Debug, Release]
-        platform: [ x64, ARM64]
+        platform: [x64, ARM64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,14 +23,11 @@ jobs:
         uses: microsoft/setup-msbuild@v1
 
       - name: Install Visual Studio dependencies
-        uses: microsoft/setup-visualstudio@v2
-        with:
-          version: "latest"
-          components: |
-            Microsoft.VisualStudio.Workload.NativeDesktop
-            Microsoft.VisualStudio.Workload.ManagedDesktop
-            Microsoft.VisualStudio.ComponentGroup.UWP.VC
-            Microsoft.VisualStudio.Component.VC.Tools.ARM64
+        run: |
+          choco install visualstudio2019-workload-manageddesktop
+          choco install visualstudio2019-workload-nativedesktop
+          choco install visualstudio2019-workload-vctools
+        shell: bash
 
       - name: Build the driver
         run: |
