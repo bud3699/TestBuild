@@ -1,4 +1,4 @@
-name: Build IDDCX Driver Project
+name: Virtual Display Driver Building
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
           choco install visualstudio2022-workload-vctools -y || exit 1
           choco install windowsdriverkit11 -y || exit 1
 
-      - name: Build the IDDCX driver
+      - name: Build the driver
         run: |
           msbuild "Virtual Display Driver (HDR)/MTTVDD.sln" /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
 
@@ -40,6 +40,7 @@ jobs:
         run: dir "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD"
 
       - name: Upload built driver
+        id: upload_artifact
         uses: actions/upload-artifact@v4
         with:
           name: Built-Driver-${{ matrix.configuration }}-${{ matrix.platform }}
@@ -48,3 +49,16 @@ jobs:
             Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\MttVDD.inf
             Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\mttvdd.cat
             Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\vdd_settings.xml
+
+      - name: Generate release tag based on date
+        id: generate_tag
+        run: |
+          echo "RELEASE_TAG=$(date +'%y.%m.%d')" >> $GITHUB_ENV
+
+
+      - name: Show generated release tag
+        run: |
+          echo "Generated Release Tag: ${{ env.RELEASE_TAG }}"
+
+      - name: Verify Built Artifacts
+        run: dir 'Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD'
