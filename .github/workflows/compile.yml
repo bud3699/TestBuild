@@ -1,12 +1,7 @@
 name: Virtual Display Driver Building
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -50,7 +45,7 @@ jobs:
             Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\mttvdd.cat
             Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\vdd_settings.xml
 
-      - name: Generate release tag based on date
+      - name: Generate release tag
         id: generate_tag
         run: |
           $releaseTag = (Get-Date).ToString('yy.MM.dd')
@@ -62,3 +57,5 @@ jobs:
             
       - name: Verify Built Artifacts
         run: dir 'Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD'
+
+
