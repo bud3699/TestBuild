@@ -1,0 +1,94 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees: ["zjoasan", "bud3699", "itsmikethetech"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: dropdown
+    id: OS
+    attributes:
+      label: Which OS?
+      description: What version of Windows are you running?
+      options:
+        - Win11 Pro
+        - Win11 Home
+        - Win10 Pro
+        - Win10 Home
+        - Other..
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: Version
+    attributes:
+      label: Which release?
+      description: What version of Windows are you running?
+      options:
+        - 24H2
+        - 23H2
+        - 22H2
+        - 21H2
+        - 1809
+        - 1607
+        - 1507
+        - Other..
+      default: 0
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        If you struggle finding windows edition and version, Go to settings -> system -> about. Under windows specifications.
+  - type: textarea
+    id: bug-info
+    attributes:
+      label: Describe the bug
+      description: Free text description.
+      placeholder: |
+        Tell us what you see!
+        A clear and concise description of what the bug is.
+    validations:
+      required: true 
+  - type: textarea
+    id: reproduce-info
+    attributes:
+      label: Steps to reproduce
+      description: And if you can how to reproduce 
+      placeholder: |
+        Tell us how to reproduce!
+        Go to '...', 2. Click on '....', and so on.
+    validations:
+      required: false 
+  - type: textarea
+    id: expected-info
+    attributes:
+      label: Expected behavior
+      description: Please inform us about expected behavior.
+      placeholder: |
+        Description of behavior!
+        When i Clicked...
+    validations:
+      required: false 
+  - type: textarea
+    id: log-file
+    attributes:
+      label: Log File (Beta Only)
+      description: Please attach the log file to help us diagnose the issue. You can drag and drop the file here or click to upload. The log can be retrieved by enabling the log file in the xml then restarting the driver.
+      placeholder: Drag and drop the log file here or click to upload.
+    validations:
+      required: false
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+
