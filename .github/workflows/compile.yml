@@ -33,7 +33,7 @@ jobs:
 
       - name: Build the IDDCX driver
         run: |
-          msbuild DriverProject.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+          msbuild "Virtual Display Driver (HDR)/MTTVDD.sln" /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
 
       - name: List build directory
         run: dir build\${{ matrix.configuration }}\${{ matrix.platform }}
