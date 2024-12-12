@@ -27,11 +27,12 @@ jobs:
 
       - name: Install Visual Studio 2022 dependencies
         run: |
-          choco install visualstudio2022-workload-manageddesktop -y
-          choco install visualstudio2022-workload-nativedesktop -y
-          choco install visualstudio2022-workload-vctools -y
-          choco install windows-sdk -y
-          choco install windows-driver-kit -y
+          choco install visualstudio2022-workload-manageddesktop -y || exit 1
+          choco install visualstudio2022-workload-nativedesktop -y || exit 1
+          choco install visualstudio2022-workload-vctools -y || exit 1
+          choco install windows-sdk -y || exit 1
+          choco install windows-driver-kit -y || exit 1
+      
           
 
       - name: Build the IDDCX driver
