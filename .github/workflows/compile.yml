@@ -1,4 +1,4 @@
-name: Build Driver Project
+name: Build IDDCX Driver Project
 
 on:
   push:
@@ -22,16 +22,21 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      - name: Install Visual Studio dependencies
-        run: |
-          choco install visualstudio2019-workload-manageddesktop
-          choco install visualstudio2019-workload-nativedesktop
-          choco install visualstudio2019-workload-vctools
-        shell: bash
+      - name: Check Chocolatey installation
+        run: choco --version
 
-      - name: Build the driver
+      - name: Install Visual Studio 2022 dependencies
+        run: |
+          choco install visualstudio2022-workload-manageddesktop -y
+          choco install visualstudio2022-workload-nativedesktop -y
+          choco install visualstudio2022-workload-vctools -y
+
+      - name: Build the IDDCX driver
         run: |
           msbuild DriverProject.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+
+      - name: List build directory
+        run: dir build\${{ matrix.configuration }}\${{ matrix.platform }}
 
       - name: Upload built driver
         uses: actions/upload-artifact@v3
