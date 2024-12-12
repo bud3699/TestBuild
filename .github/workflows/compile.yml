@@ -37,14 +37,14 @@ jobs:
           msbuild "Virtual Display Driver (HDR)/MTTVDD.sln" /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
 
       - name: List build directory
-        run: dir "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}"
+        run: dir "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD"
 
       - name: Upload built driver
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Built-Driver-${{ matrix.configuration }}-${{ matrix.platform }}
           path: |
-            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD.dll
-            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD.inf
-            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\mttvdd.cat
-            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\vdd_settings.xml
+            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\MttVDD.dll
+            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\MttVDD.inf
+            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\mttvdd.cat
+            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\vdd_settings.xml
