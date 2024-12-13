@@ -6,10 +6,6 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-        platform: [x64, ARM64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -27,23 +23,27 @@ jobs:
           choco install visualstudio2022-workload-vctools -y || exit 1
           choco install windowsdriverkit11 -y || exit 1
 
-      - name: Build the driver
+      - name: Build all configurations and platforms
         run: |
-          msbuild "Virtual Display Driver (HDR)/MTTVDD.sln" /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
-
-      - name: List build directory
-        run: dir "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD"
-
-      - name: Upload built driver
-        id: upload_artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Built-Driver-${{ matrix.configuration }}-${{ matrix.platform }}
-          path: |
-            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\MttVDD.dll
-            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\MttVDD.inf
-            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\mttvdd.cat
-            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\vdd_settings.xml
+          $configs = @('Debug', 'Release')
+          $platforms = @('x64', 'ARM64')
+          foreach ($config in $configs) {
+            foreach ($platform in $platforms) {
+              Write-Host "Building for Configuration: $config, Platform: $platform"
+              msbuild "Virtual Display Driver (HDR)/MTTVDD.sln" /p:Configuration=$config /p:Platform=$platform
+              
+              # Verify build artifacts
+              dir "Virtual Display Driver (HDR)\$platform\$config\MttVDD"
+              
+              # Upload artifacts
+              echo "::group::Uploading Built Artifacts for $config-$platform"
+              gh actions upload-artifact --name Built-Driver-$config-$platform --path "Virtual Display Driver (HDR)\$platform\$config\MttVDD\MttVDD.dll"
+              gh actions upload-artifact --name Built-Driver-$config-$platform --path "Virtual Display Driver (HDR)\$platform\$config\MttVDD\MttVDD.inf"
+              gh actions upload-artifact --name Built-Driver-$config-$platform --path "Virtual Display Driver (HDR)\$platform\$config\MttVDD\mttvdd.cat"
+              gh actions upload-artifact --name Built-Driver-$config-$platform --path "Virtual Display Driver (HDR)\$platform\$config\MttVDD\vdd_settings.xml"
+              echo "::endgroup::"
+            }
+          }
 
       - name: Generate release tag
         id: generate_tag
@@ -54,8 +54,3 @@ jobs:
       - name: Show generated release tag
         run: |
           echo "Generated Release Tag: ${{ env.RELEASE_TAG }}"
-            
-      - name: Verify Built Artifacts
-        run: dir 'Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD'
-
-
