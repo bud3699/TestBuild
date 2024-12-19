@@ -81,7 +81,7 @@ jobs:
           $platform = "${{ matrix.platform }}"
           if ($platform -eq 'ARM64') {
             (Get-Content "inno-setup\Setup.iss") | 
-              ForEach-Object { $_ -replace 'x64compatible', 'arm64compatible' } | 
+              ForEach-Object { $_ -replace 'x64compatible', 'arm64' } | 
               Set-Content "inno-setup\Setup.iss"
                 
             (Get-Content "inno-setup\Setup.iss") | 
