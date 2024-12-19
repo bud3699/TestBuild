@@ -2,10 +2,20 @@ name: Virtual Display Driver Building
 
 on:
   workflow_dispatch:
+  push:
+    branches: 
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+        platform: [x64, ARM64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -18,32 +28,35 @@ jobs:
 
       - name: Install Visual Studio 2022 dependencies
         run: |
-          choco install visualstudio2022-workload-manageddesktop -y || exit 1
-          choco install visualstudio2022-workload-nativedesktop -y || exit 1
-          choco install visualstudio2022-workload-vctools -y || exit 1
-          choco install windowsdriverkit11 -y || exit 1
+          choco install visualstudio2022-workload-manageddesktop -y
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          
+          choco install visualstudio2022-workload-nativedesktop -y
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          
+          choco install visualstudio2022-workload-vctools -y
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          
+          choco install windowsdriverkit11 -y
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
-      - name: Build all configurations and platforms
+      - name: Build the driver
         run: |
-          $configs = @('Debug', 'Release')
-          $platforms = @('x64', 'ARM64')
-          foreach ($config in $configs) {
-            foreach ($platform in $platforms) {
-              Write-Host "Building for Configuration: $config, Platform: $platform"
-              msbuild "Virtual Display Driver (HDR)/MTTVDD.sln" /p:Configuration=$config /p:Platform=$platform
-              
-              # Verify build artifacts
-              dir "Virtual Display Driver (HDR)\$platform\$config\MttVDD"
-              
-              # Upload artifacts
-              echo "::group::Uploading Built Artifacts for $config-$platform"
-              gh actions upload-artifact --name Built-Driver-$config-$platform --path "Virtual Display Driver (HDR)\$platform\$config\MttVDD\MttVDD.dll"
-              gh actions upload-artifact --name Built-Driver-$config-$platform --path "Virtual Display Driver (HDR)\$platform\$config\MttVDD\MttVDD.inf"
-              gh actions upload-artifact --name Built-Driver-$config-$platform --path "Virtual Display Driver (HDR)\$platform\$config\MttVDD\mttvdd.cat"
-              gh actions upload-artifact --name Built-Driver-$config-$platform --path "Virtual Display Driver (HDR)\$platform\$config\MttVDD\vdd_settings.xml"
-              echo "::endgroup::"
-            }
-          }
+          msbuild "Virtual Display Driver (HDR)/MTTVDD.sln" /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+
+      - name: List build directory
+        run: dir "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD"
+
+      - name: Upload built driver
+        id: upload_artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Built-Driver-${{ matrix.configuration }}-${{ matrix.platform }}
+          path: |
+            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\MttVDD.dll
+            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\MttVDD.inf
+            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\mttvdd.cat
+            Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\vdd_settings.xml
 
       - name: Generate release tag
         id: generate_tag
@@ -54,3 +67,26 @@ jobs:
       - name: Show generated release tag
         run: |
           echo "Generated Release Tag: ${{ env.RELEASE_TAG }}"
+            
+      - name: Verify Built Artifacts
+        run: dir 'Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD'
+
+      - name: Clone Inno Setup Script Repository
+        run: |
+          git clone https://github.com/bud3699/Innno-Compile-Test.git inno-setup
+
+      - name: Prepare Inno Setup Script
+        run: |
+          copy "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\*" inno-setup\artifacts\
+
+      - name: Compile .ISS to .EXE Installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: inno-setup\Setup.iss
+          options: /O+
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: Installer-${{ matrix.configuration }}-${{ matrix.platform }}
+          path: inno-setup\output\*.exe
