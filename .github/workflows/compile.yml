@@ -73,7 +73,7 @@ jobs:
 
       - name: Clone Inno Setup Script Repository
         run: |
-          git clone https://$GITHUB_ACTOR:${{ secrets.READ_REPO }}@github.com/bud3699/Innno-Compile-Test.git inno-setup
+          git clone https://${{ secrets.READ_REPO }}@github.com/bud3699/Innno-Compile-Test.git inno-setup
 
       - name: Prepare Inno Setup Input Folder
         run: |
