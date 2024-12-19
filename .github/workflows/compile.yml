@@ -80,15 +80,15 @@ jobs:
           copy "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\*" inno-setup\input\
           $platform = "${{ matrix.platform }}"
           if ($platform -eq 'ARM64') {
-            (Get-Content "inno-setup\input\Setup.iss") | 
+            (Get-Content "inno-setup\Setup.iss") | 
               ForEach-Object { $_ -replace 'x64compatible', 'arm64compatible' } | 
               Set-Content "inno-setup\input\Setup.iss"
                 
-            (Get-Content "inno-setup\input\Setup.iss") | 
+            (Get-Content "inno-setup\Setup.iss") | 
               ForEach-Object { $_ -replace '-x64', '-arm64' } | 
               Set-Content "inno-setup\input\Setup.iss"
               
-            (Get-Content "inno-setup\input\Setup.iss") | 
+            (Get-Content "inno-setup\Setup.iss") | 
               ForEach-Object { $_ -replace '1.0.0', '${{ env.RELEASE_TAG }}' } | 
               Set-Content "inno-setup\input\Setup.iss"
           }
