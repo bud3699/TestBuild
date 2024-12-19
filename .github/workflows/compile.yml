@@ -28,22 +28,17 @@ jobs:
 
       - name: Install Visual Studio 2022 dependencies
         run: |
-          $process1 = Start-Process -NoNewWindow -FilePath "choco" -ArgumentList "install visualstudio2022-workload-manageddesktop -y" -PassThru
-          $process2 = Start-Process -NoNewWindow -FilePath "choco" -ArgumentList "install visualstudio2022-workload-nativedesktop -y" -PassThru
-          $process3 = Start-Process -NoNewWindow -FilePath "choco" -ArgumentList "install visualstudio2022-workload-vctools -y" -PassThru
-          $process4 = Start-Process -NoNewWindow -FilePath "choco" -ArgumentList "install windowsdriverkit11 -y" -PassThru
-
-          $process1.WaitForExit()
-          if ($process1.ExitCode -ne 0) { exit 1 }
-
-          $process2.WaitForExit()
-          if ($process2.ExitCode -ne 0) { exit 1 }
-
-          $process3.WaitForExit()
-          if ($process3.ExitCode -ne 0) { exit 1 }
-
-          $process4.WaitForExit()
-          if ($process4.ExitCode -ne 0) { exit 1 }
+          choco install visualstudio2022-workload-manageddesktop -y
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          
+          choco install visualstudio2022-workload-nativedesktop -y
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          
+          choco install visualstudio2022-workload-vctools -y
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          
+          choco install windowsdriverkit11 -y
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Build the driver
         run: |
@@ -78,7 +73,7 @@ jobs:
 
       - name: Clone Inno Setup Script Repository
         run: |
-          git clone https://github.com/bud3699/Innno-Compile-Test.git inno-setup
+          git clone https://$GITHUB_ACTOR:${{ secrets.READ_REPO }}@github.com/bud3699/Innno-Compile-Test.git inno-setup
 
       - name: Prepare Inno Setup Input Folder
         run: |
