@@ -77,7 +77,7 @@ jobs:
 
       - name: Prepare Inno Setup Input Folder
         run: |
-          copy Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\* inno-setup\input\
+          copy "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\*" inno-setup\input\
 
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
