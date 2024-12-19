@@ -82,15 +82,15 @@ jobs:
           if ($platform -eq 'ARM64') {
             (Get-Content "inno-setup\Setup.iss") | 
               ForEach-Object { $_ -replace 'x64compatible', 'arm64compatible' } | 
-              Set-Content "inno-setup\input\Setup.iss"
+              Set-Content "inno-setup\Setup.iss"
                 
             (Get-Content "inno-setup\Setup.iss") | 
               ForEach-Object { $_ -replace '-x64', '-arm64' } | 
-              Set-Content "inno-setup\input\Setup.iss"
+              Set-Content "inno-setup\Setup.iss"
               
             (Get-Content "inno-setup\Setup.iss") | 
               ForEach-Object { $_ -replace '1.0.0', '${{ env.RELEASE_TAG }}' } | 
-              Set-Content "inno-setup\input\Setup.iss"
+              Set-Content "inno-setup\Setup.iss"
           }
 
       - name: Compile .ISS to .EXE Installer
