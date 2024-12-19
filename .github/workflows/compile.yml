@@ -78,6 +78,20 @@ jobs:
       - name: Prepare Inno Setup Input Folder
         run: |
           copy "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\*" inno-setup\input\
+          
+          if (${{ matrix.platform }} -eq 'ARM64') {
+            (Get-Content "inno-setup\input\Setup.iss") | 
+              ForEach-Object { $_ -replace 'x64compatible', 'arm64compatible' } | 
+              Set-Content "inno-setup\input\Setup.iss"
+                
+            (Get-Content "inno-setup\input\Setup.iss") | 
+              ForEach-Object { $_ -replace '-x64', '-arm64' } | 
+              Set-Content "inno-setup\input\Setup.iss"
+              
+            (Get-Content "inno-setup\input\Setup.iss") | 
+              ForEach-Object { $_ -replace '1.0.0', '${{ env.RELEASE_TAG }}' } | 
+              Set-Content "inno-setup\input\Setup.iss"
+          }
 
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
@@ -88,5 +102,5 @@ jobs:
       - name: Upload Installer
         uses: actions/upload-artifact@v3
         with:
-          name: Installer
+          name: Installer-${{ matrix.configuration }}-${{ matrix.platform }}
           path: inno-setup\output\*.exe
