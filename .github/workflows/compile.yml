@@ -67,7 +67,7 @@ jobs:
       - name: Show generated release tag
         run: |
           echo "Generated Release Tag: ${{ env.RELEASE_TAG }}"
-            
+
       - name: Verify Built Artifacts
         run: dir 'Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD'
 
@@ -75,9 +75,9 @@ jobs:
         run: |
           git clone https://github.com/bud3699/Innno-Compile-Test.git inno-setup
 
-      - name: Prepare Inno Setup Script
+      - name: Prepare Inno Setup Input Folder
         run: |
-          copy "Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\*" inno-setup\artifacts\
+          copy Virtual Display Driver (HDR)\${{ matrix.platform }}\${{ matrix.configuration }}\MttVDD\* inno-setup\input\
 
       - name: Compile .ISS to .EXE Installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
@@ -88,5 +88,5 @@ jobs:
       - name: Upload Installer
         uses: actions/upload-artifact@v3
         with:
-          name: Installer-${{ matrix.configuration }}-${{ matrix.platform }}
+          name: Installer
           path: inno-setup\output\*.exe
