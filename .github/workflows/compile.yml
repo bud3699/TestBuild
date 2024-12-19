@@ -73,7 +73,7 @@ jobs:
 
       - name: Clone Inno Setup Script Repository
         run: |
-          git clone https://${{ secrets.READ_REPO }}@github.com/bud3699/Innno-Compile-Test.git inno-setup
+          git clone https://${{ secrets.READ_REPO }}@github.com/VirtualDisplay/vdd-innosetupscript.git inno-setup 
 
       - name: Prepare Inno Setup Input Folder
         run: |
@@ -100,7 +100,7 @@ jobs:
           options: /O+
 
       - name: Upload Installer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Installer-${{ matrix.configuration }}-${{ matrix.platform }}
           path: inno-setup\output\*.exe
